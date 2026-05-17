@@ -81,3 +81,41 @@ public:
         return false;
     }
 };
+
+
+// OPTIMAL APPROACH
+// Traverse the array once and count
+// how many times sorted order breaks.
+//
+// A sorted rotated array can have
+// at most one break point.
+//
+// Circular traversal helps compare
+// last element with first element.
+
+// TC: O(n)
+// SC: O(1)
+
+class Solution {
+public:
+    bool check(vector<int>& nums) {
+
+        int n = nums.size();
+        int breaks = 0;
+
+        for(int i = 0; i < n; i++) {
+
+            // Count order violations
+            if(nums[i % n] > nums[(i + 1) % n]) {
+                breaks++;
+            }
+
+            // More than one break => invalid
+            if(breaks > 1) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+};
