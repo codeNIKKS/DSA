@@ -146,3 +146,64 @@ public:
         return maxsum;
     }
 };
+
+/*
+    LeetCode 53. Maximum Subarray
+    Printing the Maximum Sum Subarray (Kadane's Algorithm)
+
+    Intuition:
+    - Negative running sum cannot help future subarrays.
+    - Whenever running sum becomes negative,
+      start a new subarray from next index.
+
+    Additional Tracking:
+    - start     -> temporary starting index
+    - ansStart  -> starting index of final answer
+    - ansEnd    -> ending index of final answer
+
+    Time Complexity: O(n)
+    Space Complexity: O(1)
+*/
+
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+
+        int sum = 0;
+        int maxsum = INT_MIN;
+
+        int start = 0;
+        int ansStart = -1;
+        int ansEnd = -1;
+
+        for(int i = 0; i < nums.size(); i++) {
+
+            sum += nums[i];
+
+            if(sum > maxsum) {
+
+                maxsum = sum;
+
+                ansStart = start;
+                ansEnd = i;
+            }
+
+            if(sum < 0) {
+
+                sum = 0;
+
+                start = i + 1;
+            }
+        }
+
+        // Printing the subarray
+        for(int i = ansStart; i <= ansEnd; i++) {
+
+            cout << nums[i] << " ";
+        }
+
+        cout << endl;
+
+        return maxsum;
+    }
+};
