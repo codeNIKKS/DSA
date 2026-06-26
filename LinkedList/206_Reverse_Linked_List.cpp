@@ -59,6 +59,56 @@ public:
 };
 
 
+
+/*
+=========================================
+LeetCode 206. Reverse Linked List
+Approach: Optimal (Recursive)
+=========================================
+
+Intuition:
+-----------
+The last node of the linked list will become the new head after reversal.
+Recursively reverse the remaining list, then attach the current node to
+the end of the reversed part. Finally, disconnect the current node from
+its original next node to avoid forming a cycle.
+
+Approach:
+----------
+1. Base Case:
+   - If the list is empty or has only one node, return it.
+2. Recursively reverse the remaining linked list starting from head->next.
+3. Let front = head->next.
+4. Make front point back to the current node.
+5. Break the original forward link by setting head->next = NULL.
+6. Return the new head obtained from the recursive call.
+
+Time Complexity: O(N)
+Space Complexity: O(N)   // Recursive call stack
+*/
+
+class Solution {
+public:
+    ListNode* reverse(ListNode* head) {
+
+        if(head == NULL || head->next == NULL)
+            return head;
+
+        ListNode* newHead = reverse(head->next);
+
+        ListNode* front = head->next;
+        head->next = NULL;
+        front->next = head;
+
+        return newHead;
+    }
+
+    ListNode* reverseList(ListNode* head) {
+        return reverse(head);
+    }
+};
+
+
 /*
 =========================================
 LeetCode 206. Reverse Linked List
