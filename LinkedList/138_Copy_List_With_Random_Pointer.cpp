@@ -61,37 +61,44 @@ public:
 Problem : 138. Copy List with Random Pointer
 Link    : https://leetcode.com/problems/copy-list-with-random-pointer/
 
-Approach : Optimal (Interweaving / In-Place Copy)
+Approach : Optimal - Interweaving / In-Place Copy
 
 Intuition:
-- Instead of using a hash map, insert each copied node immediately
-  after its original node.
-- This allows direct access to the copied version of any node using
-  original->next.
-- Assign random pointers using:
-      copy->random = original->random->next
-- Finally, separate the interleaved list into the original list
-  and the copied list.
+- Create a copy of every node and insert it immediately after its
+  corresponding original node.
+- This gives us direct access to the copy of any node using:
+      original->next
+- For the random pointer, if:
+      temp->random = X
+  then:
+      temp->random->next
+  is the copy of X.
+- Finally, separate the original and copied lists.
+
+Steps:
+1. Create and interleave copied nodes.
+2. Assign random pointers of copied nodes.
+3. Separate the original and copied linked lists.
 
 Time Complexity : O(N)
-Space Complexity: O(1)   (excluding the copied list)
+Space Complexity: O(1) auxiliary space
 
 ----------------------------------------------------------------------------
 */
 
 class Solution {
 public:
-    Node* copyRandomList(Node* head) {
+    ListNode* copyRandomList(ListNode* head) {
 
         if (head == NULL)
             return NULL;
 
-        Node* temp = head;
+        ListNode* temp = head;
 
-        // Step 1: Insert copied nodes after every original node
+        // Step 1: Create and interleave copied nodes
         while (temp != NULL) {
 
-            Node* copyNode = new Node(temp->val);
+            ListNode* copyNode = new ListNode(temp->val);
 
             copyNode->next = temp->next;
             temp->next = copyNode;
@@ -99,38 +106,42 @@ public:
             temp = copyNode->next;
         }
 
+        // Step 2: Assign random pointers
         temp = head;
 
-        // Step 2: Copy random pointers
         while (temp != NULL) {
 
+            ListNode* copyNode = temp->next;
+
             if (temp->random != NULL)
-                temp->next->random = temp->random->next;
+                copyNode->random = temp->random->next;
+            else
+                copyNode->random = NULL;
 
             temp = temp->next->next;
         }
 
-        temp = head;
+        // Step 3: Separate original and copied lists
+        ListNode* dummy = new ListNode(-1);
+        ListNode* res = dummy;
 
-        // Step 3: Separate the original and copied lists
-        Node* dummy = new Node(-1);
-        Node* copyTail = dummy;
+        temp = head;
 
         while (temp != NULL) {
 
-            Node* copyNode = temp->next;
+            res->next = temp->next;
 
             // Restore original list
-            temp->next = copyNode->next;
+            temp->next = temp->next->next;
 
-            // Append copied node to cloned list
-            copyTail->next = copyNode;
-            copyTail = copyTail->next;
+            // Move copied-list pointer
+            res = res->next;
 
+            // Move original-list pointer
             temp = temp->next;
         }
 
-        Node* copyHead = dummy->next;
+        ListNode* copyHead = dummy->next;
         delete dummy;
 
         return copyHead;
